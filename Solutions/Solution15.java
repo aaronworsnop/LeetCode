@@ -1,43 +1,37 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 class Solution15 {
   public List<List<Integer>> threeSum(int[] nums) {
+    // Initialise return structure
+    List<List<Integer>> sums = new LinkedList<>();
+
+    // This problem is really the same as a smaller problem,
+    // ``Two Sum 2, with a dynamic target and multiple solutions.
     Arrays.sort(nums);
-    List<List<Integer>> triples = new LinkedList();
 
-    for (int i = 0; i < nums.length - 2; i++) {
-      if (i == 0 || (i > 0 && nums[i] != nums[i - 1])) {
-        int low = i + 1;
-        int high = nums.length - 1;
-        int target = nums[i] * -1;
+    for (int i = 0; i < nums.length; i++) {
+      if (i > 0 && nums[i - 1] == nums[i]) continue;
+      int leftPoint = i + 1;
+      int rightPoint = nums.length - 1;
+      int target = 0 - nums[i];
 
-        while (low < high) {
-          if (nums[low] + nums[high] == target) {
-            List<Integer> triple = new LinkedList();
-            triple.add(nums[i]);
-            triple.add(nums[low]);
-            triple.add(nums[high]);
-            triples.add(triple);
-
-            while (low < high && nums[low] == nums[low + 1]) {
-              low++;
-            }
-
-            while (low < high && nums[high] == nums[high - 1]) {
-              high--;
-            }
-
-            low++;
-            high--;
-          } else if (nums[low] + nums[high] > target) {
-            high--;
-          } else {
-            low++;
-          }
+      while (leftPoint < rightPoint) {
+        if (nums[leftPoint] + nums[rightPoint] > target) rightPoint--;
+        else if (nums[leftPoint] + nums[rightPoint] < target) leftPoint++;
+        else {
+          List<Integer> sum = new LinkedList<>();
+          sum.add(nums[i]);
+          sum.add(nums[leftPoint]);
+          sum.add(nums[rightPoint]);
+          sums.add(sum);
+          leftPoint++;
+          while (nums[leftPoint] == nums[leftPoint - 1] && leftPoint < rightPoint) leftPoint++;
         }
       }
     }
 
-    return triples;
+    return sums;
   }
 }
