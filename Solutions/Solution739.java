@@ -8,16 +8,15 @@ class Solution {
     }
 
     // Key is index, value is temperature
-    Stack<Pair<Integer, Integer>> workingStack = new Stack<>();
+    Stack<Integer> workingStack = new Stack<>();
     int[] untilWarmer = new int[temperatures.length];
 
     for (int day = 0; day < temperatures.length; day++) {
-      Pair<Integer, Integer> temperature = new Pair<>(day, temperatures[day]);
-      while (!workingStack.isEmpty() && temperature.getValue() > workingStack.peek().getValue()) {
-        untilWarmer[workingStack.peek().getKey()] =
-            temperature.getKey() - workingStack.pop().getKey();
+      int temperature = temperatures[day];
+      while (!workingStack.isEmpty() && temperature > temperatures[workingStack.peek()]) {
+        untilWarmer[workingStack.peek()] = day - workingStack.pop();
       }
-      workingStack.push(temperature);
+      workingStack.push(day);
     }
 
     return untilWarmer;
