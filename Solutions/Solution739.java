@@ -1,25 +1,25 @@
-class Solution739 {
+import java.util.Stack;
+
+class Solution {
   public int[] dailyTemperatures(int[] temperatures) {
     // Edgecases
     if (temperatures.length == 1) {
       return new int[] {0};
     }
 
-    int[] toReturn = new int[temperatures.length];
+    // Key is index, value is temperature
+    Stack<Pair<Integer, Integer>> workingStack = new Stack<>();
+    int[] untilWarmer = new int[temperatures.length];
 
-    for (int i = 0; i < temperatures.length; i++) {
-      int j = 0;
-      while (j < temperatures.length - i && temperatures[i + j] <= temperatures[i]) {
-        j++;
+    for (int day = 0; day < temperatures.length; day++) {
+      Pair<Integer, Integer> temperature = new Pair<>(day, temperatures[day]);
+      while (!workingStack.isEmpty() && temperature.getValue() > workingStack.peek().getValue()) {
+        untilWarmer[workingStack.peek().getKey()] =
+            temperature.getKey() - workingStack.pop().getKey();
       }
-
-      if (j + i == temperatures.length) {
-        toReturn[i] = 0;
-      } else {
-        toReturn[i] = j;
-      }
+      workingStack.push(temperature);
     }
 
-    return toReturn;
+    return untilWarmer;
   }
 }
