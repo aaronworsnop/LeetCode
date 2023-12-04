@@ -1,22 +1,22 @@
 import java.util.ArrayList;
 import java.util.List;
 
-class Solution22 {
+class Solution {
   public List<String> generateParenthesis(int n) {
-    List<String> parentheses = new ArrayList();
+    List<String> combinations = new ArrayList<>();
 
-    backtrack(parentheses, "", 0, 0, n);
-
-    return parentheses;
+    backtrack(combinations, "", 0, 0, n);
+    return combinations;
   }
 
-  public void backtrack(List<String> parentheses, String current, int open, int close, int max) {
-    if (current.length() == max * 2) {
-      parentheses.add(current);
+  public void backtrack(
+      List<String> combinations, String currentString, int open, int close, int max) {
+    if (currentString.length() == max * 2) {
+      combinations.add(currentString);
       return;
     }
 
-    if (open < max) backtrack(parentheses, current + "(", open + 1, close, max);
-    if (close < open) backtrack(parentheses, current + ")", open, close + 1, max);
+    if (open < max) backtrack(combinations, currentString + "(", open + 1, close, max);
+    if (close < open) backtrack(combinations, currentString + ")", open, close + 1, max);
   }
 }
