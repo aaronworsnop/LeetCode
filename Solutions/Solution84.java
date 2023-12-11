@@ -1,40 +1,51 @@
 class Solution84 {
   public int largestRectangleArea(int[] heights) {
-    // Find areas moving, calculating from left to right
-    int maxArea = 0;
-
     // Edgecases
     if (heights.length == 1) {
       return heights[0];
     }
 
-    // Track all columns that we should start at, avoiding duplicate and
-    // subset areas
-    Stack<Integer> startingColumns = new Stack<>();
-    if (heights[0] > 0) startingColumns.push(0);
+    int n = heights.length;
+    int[] nextSmallerRight = new int[n];
+    int[] nextSmallerLeft = new int[n];
 
-    // Find all columns we should start at
-    for (int currentIndex = 1; currentIndex < heights.length; currentIndex++) {
-      if (heights[currentIndex] > heights[currentIndex - 1]) {
-        // We have an increase in height, we want to consider this column
-        startingColumns.push(currentIndex);
+    Stack<Integer> stack = new Stack<>();
+
+    // Calculate Next Smaller to the Right
+    for (int i = n - 1; i >= 0; i--) {
+      while (!stack.isEmpty() && heights[i] <= heights[stack.peek()]) {
+        stack.pop();
       }
+      if (stack.isEmpty()) {
+        nextSmallerRight[i] = n;
+      } else {
+        nextSmallerRight[i] = stack.peek();
+      }
+      stack.push(i);
     }
 
-    while (!startingColumns.isEmpty()) {
-      // Find the maximum area starting from this column
-      int startingColumnIndex = startingColumns.pop();
-      int currentHeight = heights[startingColumnIndex];
-      for (int areaEnd = startingColumnIndex; areaEnd < heights.length; areaEnd++) {
-        if (heights[areaEnd] < currentHeight) {
-          // Don't consider areas that don't exist by decreasing height
-          // accordingly
-          currentHeight = heights[areaEnd];
-        }
+    while (!stack.isEmpty()) {
+      stack.pop();
+    }
 
-        int area = (areaEnd - startingColumnIndex + 1) * currentHeight;
-        maxArea = Math.max(maxArea, area);
+    // Calculate Next Smaller to the Left
+    for (int i = 0; i < n; i++) {
+      while (!stack.isEmpty() && heights[i] <= heights[stack.peek()]) {
+        stack.pop();
       }
+      if (stack.isEmpty()) {
+        nextSmallerLeft[i] = -1;
+      } else {
+        nextSmallerLeft[i] = stack.peek();
+      }
+      stack.push(i);
+    }
+
+    // Calculate the maximum rectangle area
+    int maxArea = 0;
+
+    for (int i = 0; i < n; i++) {
+      maxArea = Math.max(maxArea, heights[i] * (nextSmallerRight[i] - nextSmallerLeft[i] - 1));
     }
 
     return maxArea;
