@@ -1,32 +1,36 @@
-class Solution {
+class Solution875 {
   public int minEatingSpeed(int[] piles, int h) {
-    // Find the maximum "right" value in this binary search
-    int maxRight = 0;
+    // Edgecases
+    if (piles.length == 1) {
+      return piles[0];
+    }
 
+    int left = 1;
+    int right = 0;
+
+    // Find the maximum value possible
     for (int pile : piles) {
-      maxRight = Math.max(maxRight, pile);
+      right = Math.max(right, pile);
     }
 
-    return binaryTry(1, maxRight, h, piles);
-  }
+    int result = right;
 
-  private int binaryTry(int left, int right, int hours, int[] piles) {
-    int mid = left + (right - left) / 2;
+    while (left <= right) {
+      int k = left + (right - left) / 2;
+      int hours = 0;
 
-    if (kIsEnough(mid, hours, piles)) {
-      if (!kIsEnough(mid - 1, hours, piles)) return mid;
-      else return binaryTry(left, mid - 1, hours, piles);
-    } else {
-      return binaryTry(mid + 1, right, hours, piles);
-    }
-  }
+      for (int pile : piles) {
+        hours += Math.ceil((double) pile / k);
+      }
 
-  private boolean kIsEnough(int k, int hours, int[] piles) {
-    int actualK = 0;
-    for (int pile : piles) {
-      actualK += Math.ceil((double) pile / k);
+      if (hours <= h) {
+        result = Math.min(k, result);
+        right = k - 1;
+      } else {
+        left = k + 1;
+      }
     }
 
-    return (actualK <= hours);
+    return result;
   }
 }
