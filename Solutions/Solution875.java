@@ -1,9 +1,5 @@
 class Solution875 {
   public int minEatingSpeed(int[] piles, int h) {
-    // Edgecases
-    if (piles.length == 1) {
-      return piles[0];
-    }
 
     int left = 1;
     int right = 0;
