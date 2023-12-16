@@ -1,54 +1,77 @@
 class Solution33 {
   public int search(int[] nums, int target) {
-    // Find the pivot point / rotate point / where the array starts
+    // no repeated values, [1, 2, 4, 7, 8]
+    // rotation means that the numbers
+    // get cut off from the beginning then put at the end of
+    // rotate around index 3 -> [7, 8, 1, 2, 4]
 
-    int start = 0;
-    int least = nums[0];
+    // The trivial solution would be to just go through
+    // all of the elements in n and then check for the
+    // target.
 
-    int findingLeft = 0;
-    int findingRight = nums.length - 1;
-    int findingMid = 0;
+    // We have an advantage since the array is sorted though.
+    // Consider n before the rotation. if target is 100, we know
+    // that's not in n because 100 > n[n.length - 1]. Same for
+    // the small numbers.
 
-    while (findingLeft <= findingRight) {
-      if (nums[findingLeft] < nums[findingRight]) {
-        if (nums[findingLeft] < least) {
-          least = nums[findingLeft];
-          start = findingLeft;
-        }
-        break;
-      }
+    // We can still do this, we just need to shift our start and end
+    // to the point of rotation. We can do this by first finding
+    // where the rotation is, where n[k] < n[k - 1] after the rotation.
 
-      findingMid = findingLeft + (findingRight - findingLeft) / 2;
-      if (nums[findingMid] < least) {
-        least = nums[findingMid];
-        start = findingMid;
-      }
+    // After the rotation we can perform a binary search
 
-      if (nums[findingMid] >= nums[findingLeft]) {
-        findingLeft = findingMid + 1;
-      } else {
-        findingRight = findingMid - 1;
-      }
+    // Edgcases
+    if (nums == null || nums.length == 0) {
+      return -1;
     }
 
+    // Find the pivot point, defined where the break caused by rotation exists
+    // Synonymous with smallest value, i - 1 is largest value.
+    int pivotPoint = 0;
     int left = 0;
     int right = nums.length - 1;
 
-    if (start == left) {
+    while (left < right) {
+      int mid = left + (right - left) / 2;
 
-    } else if (target > nums[right]) {
-      right = start - 1;
-    } else {
-      left = start;
+      if (nums[mid] > nums[right]) {
+        left = mid + 1;
+      } else {
+        right = mid;
+      }
     }
 
-    while (left <= right) {
-      int mid = left + (right - left) / 2;
-      System.out.println("Left: " + left + " | Mid: " + mid + " | Right: " + right);
+    pivotPoint = left;
 
-      if (nums[mid] == target) return mid;
-      else if (nums[mid] > target) right = mid - 1;
-      else left = mid + 1;
+    if (pivotPoint != 0) {
+      // Has been rotated
+      if (target < nums[pivotPoint] || target > nums[pivotPoint - 1]) {
+        return -1;
+      } else {
+        int leftSide = binarySearch(nums, target, 0, pivotPoint - 1);
+        int rightSide = binarySearch(nums, target, pivotPoint, nums.length - 1);
+        return Math.max(leftSide, rightSide);
+      }
+    } else {
+      // Has not been rotated
+      if (target < nums[0] || target > nums[nums.length - 1]) {
+        return -1;
+      } else {
+        return binarySearch(nums, target, 0, nums.length - 1);
+      }
+    }
+  }
+
+  public int binarySearch(int[] nums, int target, int left, int right) {
+    if (right >= left) {
+      int mid = left + (right - left) / 2;
+      if (nums[mid] == target) {
+        return mid;
+      } else if (nums[mid] > target) {
+        return binarySearch(nums, target, left, mid - 1);
+      } else {
+        return binarySearch(nums, target, mid + 1, right);
+      }
     }
 
     return -1;
