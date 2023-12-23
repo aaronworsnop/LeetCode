@@ -10,38 +10,60 @@ class Solution143 {
       return;
     }
 
-    int size = 0;
-    Stack<Integer> oddStack = new Stack<>();
+    ListNode slow = head;
+    ListNode fast = head.next;
 
-    ListNode current = head;
-    ListNode oldHead = new ListNode();
-    ListNode oldCurrent = oldHead;
-
-    while (current != null) {
-      oddStack.push(current.val);
-      oldCurrent.val = current.val;
-
-      size++;
-      current = current.next;
-
-      if (current != null) {
-        oldCurrent.next = new ListNode();
-        oldCurrent = oldCurrent.next;
-      }
+    while (fast != null && fast.next != null) {
+      slow = slow.next;
+      fast = fast.next.next;
     }
 
-    oldCurrent = oldHead;
+    // `slow` is now the head of the second list, to be reversed
+    // `head` is the head of the first list.
+    ListNode finish = slow;
+    slow = slow.next;
+    finish.next = null;
+
+    // Reverse the second list
+    reverseLinkedList(slow);
+
+    // Merge the two lists, alternatingly and starting with the first
+    // list.
+    mergeLinkedLists(head, slow);
+  }
+
+  private void reverseLinkedList(ListNode head) {
+    Stack<Integer> stack = new Stack<>();
+
+    ListNode current = head;
+
+    while (current != null) {
+      stack.push(current.val);
+      current = current.next;
+    }
+
     current = head;
 
-    for (int i = 0; i < size; i++) {
-      if (i % 2 == 0) {
-        current.val = oldCurrent.val;
-        current = current.next;
-        oldCurrent = oldCurrent.next;
-      } else {
-        current.val = oddStack.pop();
-        current = current.next;
+    while (!stack.isEmpty()) {
+      current.val = stack.pop();
+      current = current.next;
+    }
+  }
+
+  private void mergeLinkedLists(ListNode list1, ListNode list2) {
+    while (list2 != null) {
+      ListNode list1Next = list1.next;
+      ListNode list2Next = list2.next;
+
+      list1.next = list2;
+
+      if (list1Next == null) {
+        break;
       }
+
+      list2.next = list1Next;
+      list1 = list1Next;
+      list2 = list2Next;
     }
   }
 }
