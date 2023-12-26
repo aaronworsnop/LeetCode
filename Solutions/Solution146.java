@@ -1,82 +1,73 @@
 class LRUCache {
-  // This data structure has a specific capacity, and will
-  // be filled or accessed. When we want to add something to
-  // this data structure, but it is at capacity, we will
-  // need to replace the least recently used item (lowest)
-  // number that we assigned.
+  class Node {
+    int key;
+    int val;
+    Node prev;
+    Node next;
 
-  // When an item is accessed, it should become the highest/
-  // most recently used item.
+    Node(int key, int val) {
+      this.key = key;
+      this.val = val;
+    }
+  }
 
-  // We could have a LinkedList that starts
-
-  private int capacity;
-  private int[][] cache;
-  private int highestPriority;
+  Node head = new Node(-1, -1);
+  Node tail = new Node(-1, -1);
+  int cap;
+  HashMap<Integer, Node> m = new HashMap<>();
 
   public LRUCache(int capacity) {
-    this.highestPriority = 0;
-    this.capacity = capacity;
-    this.fill = 0;
-    // Depth 0: key
-    // Depth 1: value
-    // Depth 2: priority
-    this.cache = new int[capacity][3];
-    for (int i = 0; i < capacity; i++) {
-      for (int j = 0; j < 3; j++) {
-        cache[i][j] = -1;
-      }
-    }
+    cap = capacity;
+    head.next = tail;
+    tail.prev = head;
+  }
+
+  private void addNode(Node newnode) {
+    Node temp = head.next;
+
+    newnode.next = temp;
+    newnode.prev = head;
+
+    head.next = newnode;
+    temp.prev = newnode;
+  }
+
+  private void deleteNode(Node delnode) {
+    Node prevv = delnode.prev;
+    Node nextt = delnode.next;
+
+    prevv.next = nextt;
+    nextt.prev = prevv;
   }
 
   public int get(int key) {
-    highestPriority++;
-    int i = 0;
-    while (cache[i][0] != key) {
-      i++;
-      if (i == capacity) {
-        return -1;
-      }
+    if (m.containsKey(key)) {
+      Node resNode = m.get(key);
+      int ans = resNode.val;
+
+      m.remove(key);
+      deleteNode(resNode);
+      addNode(resNode);
+
+      m.put(key, head.next);
+      return ans;
     }
-    cache[i][2] = highestPriority;
-    return cache[i][1];
+    return -1;
   }
 
   public void put(int key, int value) {
-    highestPriority++;
-
-    // Check if we're replacing a key
-    for (int i = 0; i < capacity; i++) {
-      if (cache[i][0] == key) {
-        cache[i][1] = value;
-        cache[i][2] = highestPriority;
-        return;
-      }
+    if (m.containsKey(key)) {
+      Node curr = m.get(key);
+      m.remove(key);
+      deleteNode(curr);
     }
 
-    if (highestPriority <= capacity) {
-      int nextSpot = highestPriority - 1;
-      cache[nextSpot][0] = key;
-      cache[nextSpot][1] = value;
-      cache[nextSpot][2] = highestPriority;
-    } else {
-      int least = cache[0][2];
-      int leastPosition = 0;
-      for (int i = 0; i < capacity; i++) {
-        if (cache[i][2] < least) {
-          least = cache[i][2];
-          leastPosition = i;
-        }
-      }
-
-      cache[leastPosition][0] = key;
-      cache[leastPosition][1] = value;
-      cache[leastPosition][2] = highestPriority;
+    if (m.size() == cap) {
+      m.remove(tail.prev.key);
+      deleteNode(tail.prev);
     }
+
+    addNode(new Node(key, value));
+    m.put(key, head.next);
   }
 }
-
-/**
- * Your LRUCache object will be instantiated and called as such: LRUCache obj = new
- * LRUCache(capacity); int param_1 = obj.get(key); obj.put(key,value);
- */
