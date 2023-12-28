@@ -1,35 +1,34 @@
 class Solution75 {
   public void sortColors(int[] nums) {
-    // red white and blue
-    // can just count and replace instead of sorting.
+    quickSort(nums, 0, nums.length - 1);
+  }
 
-    if (nums.length == 1) return;
+  private void quickSort(int[] nums, int left, int right) {
+    if (left < right) {
+      int pivot = partition(nums, left, right);
+      quickSort(nums, left, pivot);
+      quickSort(nums, pivot + 1, right);
+    }
+  }
 
-    Map<Integer, Integer> colourFreq = new HashMap<>();
+  private int partition(int[] nums, int left, int right) {
+    int pivot = nums[left];
+    int i = left + 1;
 
-    for (int i = 0; i < nums.length; i++) {
-      colourFreq.put(nums[i], colourFreq.getOrDefault(nums[i], 0) + 1);
+    for (int j = i; j <= right; j++) {
+      if (nums[j] < pivot) {
+        swap(nums, i, j);
+        i++;
+      }
     }
 
-    int red = colourFreq.getOrDefault(0, 0);
-    int white = colourFreq.getOrDefault(1, 0);
-    int blue = colourFreq.getOrDefault(2, 0);
+    swap(nums, left, i - 1);
+    return i - 1;
+  }
 
-    int num = 0;
-
-    while (red != 0) {
-      nums[num++] = 0;
-      red--;
-    }
-
-    while (white != 0) {
-      nums[num++] = 1;
-      white--;
-    }
-
-    while (blue != 0) {
-      nums[num++] = 2;
-      blue--;
-    }
+  private void swap(int[] nums, int pos1, int pos2) {
+    int temp = nums[pos1];
+    nums[pos1] = nums[pos2];
+    nums[pos2] = temp;
   }
 }
