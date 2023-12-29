@@ -1,22 +1,22 @@
 class Solution78 {
   public List<List<Integer>> subsets(int[] nums) {
-    // This is a backtracking problem
-    List<List<Integer>> subsets = new ArrayList<>();
-    backtrack(subsets, nums, new ArrayList<>(), 0);
-    return subsets;
+    List<List<Integer>> ans = new ArrayList<>();
+    backtrack(nums, 0, ans, new ArrayList<>());
+    return ans;
   }
 
   private void backtrack(
-      List<List<Integer>> subsets, int[] nums, List<Integer> currentSubset, int decision) {
-    if (decision >= nums.length) {
-      subsets.add(new ArrayList<>(currentSubset));
+      int[] nums, int decision, List<List<Integer>> ans, List<Integer> currentSubset) {
+    if (decision == nums.length) {
+      List<Integer> subset = new ArrayList<>(currentSubset);
+      ans.add(subset);
       return;
     }
 
-    currentSubset.add(nums[decision]);
-    backtrack(subsets, nums, currentSubset, decision + 1);
+    backtrack(nums, decision + 1, ans, currentSubset);
 
+    currentSubset.add(nums[decision]);
+    backtrack(nums, decision + 1, ans, currentSubset);
     currentSubset.remove(currentSubset.size() - 1);
-    backtrack(subsets, nums, currentSubset, decision + 1);
   }
 }
