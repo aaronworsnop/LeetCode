@@ -3,7 +3,8 @@ class Solution134 {
     int total = 0;
 
     for (int station = 0; station < gas.length; station++) {
-      total += gas[station] - cost[station];
+      gas[station] = gas[station] - cost[station];
+      total += gas[station];
     }
 
     if (total < 0) {
@@ -14,7 +15,7 @@ class Solution134 {
     int positiveFor = 0;
     int station = 0;
     while (positiveFor < gas.length) {
-      total += gas[station] - cost[station];
+      total += gas[station];
       if (total < 0) {
         total = 0;
         positiveFor = 0;
