@@ -4,19 +4,20 @@ class Solution116 {
       return root;
     }
 
-    Queue<Node> queue = new LinkedList<>();
+    Node current = root;
+    Node next = null;
+    if (current.left != null) next = root.left;
 
-    queue.add(root);
+    while (current != null && next != null) {
+      current.left.next = current.right;
+      if (current.next != null) {
+        current.right.next = current.next.left;
+      }
 
-    while (!queue.isEmpty()) {
-      int queueSize = queue.size();
-
-      for (int node = 0; node < queueSize; node++) {
-        Node current = queue.poll();
-
-        if (current.left != null) queue.add(current.left);
-        if (current.right != null) queue.add(current.right);
-        if (node + 1 < queueSize) current.next = queue.peek();
+      current = current.next;
+      if (current == null) {
+        current = next;
+        next = next.left;
       }
     }
 
