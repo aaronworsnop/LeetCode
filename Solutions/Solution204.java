@@ -3,20 +3,20 @@ class Solution204 {
     // start with two, doesn't divide and go up
     // start counting from 2, include 2 and only do odd numbers
 
-    int primes = 0;
-
     if (n <= 2) {
-      return primes;
+      return 0;
     }
 
-    boolean[] composite = new boolean[n];
-    composite[0] = true;
+    int primes = 1;
 
-    for (int number = 0; number < n - 1; number++) {
+    boolean[] composite = new boolean[n + 1];
+    composite[2] = true;
+
+    for (int number = 3; number < n; number += 2) {
       if (composite[number] != true) {
         primes++;
-        for (int multiple = 2; (number + 1) * multiple - 1 < n; multiple++) {
-          composite[(number + 1) * multiple - 1] = true;
+        for (int multiple = 2; number * multiple < n; multiple++) {
+          composite[number * multiple] = true;
         }
       }
     }
