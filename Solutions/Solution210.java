@@ -1,57 +1,47 @@
 class Solution210 {
-    public int[] findOrder(int numCourses, int[][] prerequisites) {
-        // Find the topological ordering
+  public int[] findOrder(int numCourses, int[][] prerequisites) {
+    // Find the topological ordering
 
-        // First build adjacency list digraph representation
-        // and the reverse
-        Map<Integer, List<Integer>> reqGraph = new HashMap<>();
-        Map<Integer, Integer> courseInDegree = new HashMap<>();
+    // First build adjacency list digraph representation
+    // and the reverse
+    Map<Integer, List<Integer>> reqGraph = new HashMap<>();
+    int[] inDegree = new int[numCourses];
 
-        for (int i = 0; i < numCourses; i++) {
-            courseInDegree.put(i, 0);
-        }
+    // Build adjacency list and in-degree array
+    for (int[] prerequisite : prerequisites) {
+      int from = prerequisite[1];
+      int to = prerequisite[0];
 
-        for (int[] course : prerequisites) {
-            // Put adjacency in graph
-            List<Integer> courseAdjacencies = reqGraph.getOrDefault(course[1], new ArrayList<>());
-            courseAdjacencies.add(course[0]);
-            reqGraph.put(course[1], courseAdjacencies);
-
-            // Update the in-degree map
-            courseInDegree.put(course[0], courseInDegree.get(course[0]) + 1);
-        }
-
-        System.out.println(reqGraph);
-        System.out.println(courseInDegree);
-
-        // If the in-degree is ever zero, we need to return 
-        // an empty array 
-
-        int[] topologicalOrdering = new int[numCourses];
-        for (int i = 0; i < numCourses; i++) {
-            int courseWithZeroIn = numCourses;
-
-            for (Map.Entry<Integer, Integer> degree : courseInDegree.entrySet()) {
-                if (degree.getValue() == 0) {
-                    courseWithZeroIn = degree.getKey();
-
-                    // Update in-degrees
-                    for (int adjacentCourse : reqGraph.getOrDefault(courseWithZeroIn, new ArrayList<Integer>())) {
-                        courseInDegree.put(adjacentCourse, courseInDegree.getOrDefault(adjacentCourse, 1) - 1);
-                    }
-
-                    courseInDegree.remove(degree.getKey());
-                    break;
-                }
-            }
-
-            if (courseWithZeroIn == numCourses) {
-                return new int[0];
-            } else {
-                topologicalOrdering[i] = courseWithZeroIn; 
-            }
-        }
-
-        return topologicalOrdering;
+      reqGraph.computeIfAbsent(from, key -> new ArrayList<>()).add(to);
+      inDegree[to]++;
     }
+
+    Queue<Integer> zeroInDegreeQueue = new LinkedList<>();
+    for (int course = 0; course < numCourses; course++) {
+      if (inDegree[course] == 0) {
+        zeroInDegreeQueue.offer(course);
+      }
+    }
+
+    int[] topologicalOrdering = new int[numCourses];
+    int index = 0;
+
+    while (!zeroInDegreeQueue.isEmpty()) {
+      int course = zeroInDegreeQueue.poll();
+      topologicalOrdering[index++] = course;
+
+      if (reqGraph.containsKey(course)) {
+        for (int next : reqGraph.get(course)) {
+          inDegree[next]--;
+          if (inDegree[next] == 0) zeroInDegreeQueue.offer(next);
+        }
+      }
+    }
+
+    if (index == numCourses) {
+      return topologicalOrdering;
+    } else {
+      return new int[0];
+    }
+  }
 }
