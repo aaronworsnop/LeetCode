@@ -9,11 +9,11 @@ class Trie {
     Node current = root;
 
     for (int letter = 0; letter < word.length(); letter++) {
-      if (!current.children.containsKey(word.charAt(letter))) {
-        current.children.put(word.charAt(letter), new Node());
+      if (current.children[word.charAt(letter) - 'a'] == null) {
+        current.children[word.charAt(letter) - 'a'] = new Node();
       }
 
-      current = current.children.get(word.charAt(letter));
+      current = current.children[word.charAt(letter) - 'a'];
     }
 
     current.endOfWord = true;
@@ -23,8 +23,8 @@ class Trie {
     Node current = root;
 
     for (int letter = 0; letter < word.length(); letter++) {
-      if (!current.children.containsKey(word.charAt(letter))) return false;
-      current = current.children.get(word.charAt(letter));
+      if (current.children[word.charAt(letter) - 'a'] == null) return false;
+      current = current.children[word.charAt(letter) - 'a'];
     }
 
     return current.endOfWord;
@@ -34,19 +34,15 @@ class Trie {
     Node current = root;
 
     for (int letter = 0; letter < prefix.length(); letter++) {
-      if (!current.children.containsKey(prefix.charAt(letter))) return false;
-      current = current.children.get(prefix.charAt(letter));
+      if (current.children[prefix.charAt(letter) - 'a'] == null) return false;
+      current = current.children[prefix.charAt(letter) - 'a'];
     }
 
     return true;
   }
 
   private class Node {
-    public Map<Character, Node> children;
+    public Node[] children = new Node[26];
     public boolean endOfWord = false;
-
-    public Node() {
-      this.children = new HashMap<>();
-    }
   }
 }
