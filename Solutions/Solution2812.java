@@ -47,23 +47,7 @@ class Solution2812 {
     }
 
     // Initialise a grid that measures how far each cell is from a thief
-    int[][] distanceGrid = new int[grid.size()][grid.get(0).size()];
-
-    // Initialise all cells to an impossible distance from a thief
-    for (int row = 0; row < grid.size(); row++) {
-      for (int col = 0; col < grid.get(0).size(); col++) {
-        distanceGrid[row][col] = 1000;
-      }
-    }
-
-    // Update the distance from thieves for all cells
-    for (int row = 0; row < grid.size(); row++) {
-      for (int col = 0; col < grid.get(0).size(); col++) {
-        if (grid.get(row).get(col) == 1) {
-          populateDistances(distanceGrid, row, col);
-        }
-      }
-    }
+    int[][] distanceGrid = populateDistances(grid);
 
     // Using a binary search to find the safeness factor of the safest path
     int leftBound = 0;
@@ -86,14 +70,21 @@ class Solution2812 {
     return 0;
   }
 
-  private void populateDistances(int[][] grid, int row, int col) {
+  private int[][] populateDistances(List<List<Integer>> grid) {
     // BFS
+    int[][] distances = new int[grid.size()][grid.get(0).size()];
     Queue<int[]> queue = new LinkedList<>();
-    boolean[][] seen = new boolean[grid.length][grid[0].length];
+    boolean[][] seen = new boolean[grid.size()][grid.get(0).size()];
     int distance = 0;
 
-    queue.offer(new int[] {row, col});
-    seen[row][col] = true;
+    for (int row = 0; row < grid.size(); row++) {
+      for (int col = 0; col < grid.get(0).size(); col++) {
+        if (grid.get(row).get(col) == 1) {
+          queue.offer(new int[] {row, col});
+          seen[row][col] = true;
+        }
+      }
+    }
 
     while (!queue.isEmpty()) {
       int nextDistances = queue.size();
@@ -101,10 +92,10 @@ class Solution2812 {
       for (int cell = 0; cell < nextDistances; cell++) {
         int[] coords = queue.poll();
         int x = coords[0], y = coords[1];
-        grid[x][y] = Math.min(distance, grid[x][y]);
+        distances[x][y] = distance;
 
         // Expanding outwards in all directions
-        if (x < grid.length - 1 && !seen[x + 1][y]) {
+        if (x < distances.length - 1 && !seen[x + 1][y]) {
           seen[x + 1][y] = true;
           queue.offer(new int[] {x + 1, y});
         }
@@ -114,7 +105,7 @@ class Solution2812 {
           queue.offer(new int[] {x - 1, y});
         }
 
-        if (y < grid.length - 1 && !seen[x][y + 1]) {
+        if (y < distances.length - 1 && !seen[x][y + 1]) {
           seen[x][y + 1] = true;
           queue.offer(new int[] {x, y + 1});
         }
@@ -127,6 +118,8 @@ class Solution2812 {
 
       distance++;
     }
+
+    return distances;
   }
 
   private boolean hasPath(int[][] grid, int limit) {
