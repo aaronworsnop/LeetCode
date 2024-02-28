@@ -1,67 +1,44 @@
 class RandomizedSet {
-  List<Integer>[] table;
-  int capacity;
+  Map<Integer, Integer> map;
   List<Integer> existingElementIndices;
 
   public RandomizedSet() {
-    // Create a table with size `capacity`
-    this.capacity = 2 * (int) Math.pow(10, 5);
-    this.table = new List[capacity];
+    this.map = new HashMap<>();
     this.existingElementIndices = new ArrayList<>();
-
-    this.table = new List[capacity];
-    for (int i = 0; i < capacity; i++) {
-      table[i] = new LinkedList<>();
-    }
   }
 
   public boolean insert(int val) {
-    int hash = hash(val);
-    List<Integer> elementList = table[hash];
-
-    if (elementList.contains(val)) {
+    if (map.containsKey(val)) {
       return false;
     } else {
-      elementList.add(val);
-      existingElementIndices.add(hash);
+      map.put(val, existingElementIndices.size());
+      existingElementIndices.add(val);
       return true;
     }
   }
 
   public boolean remove(int val) {
-    int hash = hash(val);
-    List<Integer> elementList = table[hash];
+    if (!map.containsKey(val)) {
+      return false;
+    } else {
+      int index = map.get(val);
+      int lastVal = existingElementIndices.get(existingElementIndices.size() - 1);
 
-    for (int index = 0; index < elementList.size(); index++) {
-      if (elementList.get(index) == val) {
-        elementList.remove(index);
+      // Update the index of the last element in the map
+      map.put(lastVal, index);
 
-        // This is not O(1)
-        if (elementList.size() == 0) {
-          existingElementIndices.remove(existingElementIndices.indexOf(hash));
-        }
+      // Swap the values at index and size-1, then remove the last element
+      existingElementIndices.set(index, lastVal);
+      existingElementIndices.remove(existingElementIndices.size() - 1);
 
-        return true;
-      }
+      map.remove(val);
+      return true;
     }
-
-    return false;
   }
 
   public int getRandom() {
     Random rand = new Random();
-    int randomIndex = rand.nextInt(existingElementIndices.size());
-    List<Integer> elementList = table[existingElementIndices.get(randomIndex)];
-    int randomCollisionIndex = rand.nextInt(elementList.size());
-    return elementList.get(randomCollisionIndex);
-  }
-
-  private int hash(int val) {
-    // capacity is the upper bound
-    val ^= (val << 13);
-    val ^= (val >>> 17);
-    val ^= (val << 5);
-    return val % capacity;
+    return existingElementIndices.get(rand.nextInt(existingElementIndices.size()));
   }
 }
 
