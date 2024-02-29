@@ -1,6 +1,8 @@
 class Solution384 {
-  int[] original;
-  int[] array;
+  private int[] original;
+  private int[] array;
+
+  Random random = new Random();
 
   public Solution(int[] nums) {
     this.original = new int[nums.length];
@@ -17,9 +19,8 @@ class Solution384 {
 
   public int[] shuffle() {
     // Swap every element with a new spot
-    Random rand = new Random();
     for (int i = 0; i < array.length; i++) {
-      int swapIndex = rand.nextInt(array.length);
+      int swapIndex = i + random.nextInt(array.length - i);
       swap(array, i, swapIndex);
     }
     return array;
@@ -31,3 +32,8 @@ class Solution384 {
     array[index2] = temp;
   }
 }
+
+/**
+ * Your Solution object will be instantiated and called as such: Solution obj = new Solution(nums);
+ * int[] param_1 = obj.reset(); int[] param_2 = obj.shuffle();
+ */
