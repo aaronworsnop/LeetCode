@@ -5,30 +5,33 @@ class Solution119 {
     // Edgecases
     if (rowIndex < 0) {
       return new ArrayList<Integer>();
-    } else if (rowIndex == 0) {
-      return new ArrayList<Integer>(Arrays.asList(1));
     }
 
-    // There is actuallly no need for the capstone element
+    // Add the first layer
+    triangle.add(new ArrayList<Integer>(Arrays.asList(1)));
+
     int currentRow = 1;
     while (currentRow <= rowIndex) {
-      List<Integer> triangleRow = new ArrayList<Integer>();
+      List<Integer> triangleRow = new ArrayList<>();
 
-      for (int index = 0; index <= currentRow; index++) {
-        if (index == 0 || index == currentRow) {
-          // Edges of the triangle
-          triangleRow.add(1);
-        } else {
-          System.out.println(currentRow - 1);
-          List<Integer> prevTriangleRow = triangle.get(currentRow - 2);
-          triangleRow.add(prevTriangleRow.get(index - 1) + prevTriangleRow.get(index));
-        }
+      // Add the edge piece
+      triangleRow.add(1);
+
+      // Construct half of the trianlge row
+      for (int index = 1; index < (currentRow + 2) / 2; index++) {
+        List<Integer> previousRow = triangle.get(currentRow - 1);
+        triangleRow.add(previousRow.get(index - 1) + previousRow.get(index));
+      }
+
+      // Reflect the row
+      for (int index = 0; index < (currentRow + 1) / 2; index++) {
+        triangleRow.add(triangleRow.get((currentRow + 1) / 2 - index - 1));
       }
 
       triangle.add(triangleRow);
       currentRow++;
     }
 
-    return triangle.get(rowIndex - 1);
+    return triangle.get(rowIndex);
   }
 }
