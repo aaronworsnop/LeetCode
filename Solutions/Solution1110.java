@@ -47,13 +47,13 @@ class Solution1110 {
     // Initialise a set of nodes to delete
     Set<Integer> deleteSet = new HashSet<>();
 
-    for (int node = 0; node < to_delete.length; node++) {
+    int nodesToDelete = to_delete.length;
+    for (int node = 0; node < nodesToDelete; node++) {
       deleteSet.add(to_delete[node]);
     }
 
-    // deleteSet: 1, 2, 3, 4, 5, 6, 7
-    // traversalQueue:
-    // forest:
+    // When we have deleted all nodes, stop looking
+    int nodesDeleted = 0;
 
     // Execute a BFS traversal of the tree, deleting nodes when necessary
     Queue<TreeNode> traversalQueue = new LinkedList<>();
@@ -63,7 +63,7 @@ class Solution1110 {
       forest.add(root);
     }
 
-    while (!traversalQueue.isEmpty()) {
+    while (!traversalQueue.isEmpty() && nodesDeleted < nodesToDelete) {
       int queueSize = traversalQueue.size();
 
       for (int count = 0; count < queueSize; count++) {
@@ -93,6 +93,8 @@ class Solution1110 {
 
           currentNode.left = null;
           currentNode.right = null;
+
+          nodesDeleted++;
 
         } else {
           // This node doesn't need to be removed, but we may
