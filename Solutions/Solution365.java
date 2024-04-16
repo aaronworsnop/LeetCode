@@ -1,4 +1,4 @@
-class Solution {
+class Solution365 {
   public boolean canMeasureWater(int x, int y, int target) {
 
     // Edgecases
