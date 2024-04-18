@@ -1,7 +1,5 @@
 class Solution39 {
-  private List<List<Integer>> combinations;
-  private int[] candidates;
-  private int target;
+  List<List<Integer>> combinations = new ArrayList<>();
 
   public List<List<Integer>> combinationSum(int[] candidates, int target) {
     // `candidates[]` is an integer array
@@ -38,41 +36,30 @@ class Solution39 {
     // candidates: [1], target: 20
     // candidates: [2, 3, 4], target: 4
 
-    // START
-
-    // Initialise global variables
-    this.combinations = new LinkedList<>();
-    this.candidates = candidates;
-    this.target = target;
-
     // Edge and known cases
     if (candidates.length == 0) {
       return combinations;
     }
 
-    findCombinations(new LinkedList<>(), 0, 0);
-
+    findCombinations(candidates, 0, target, new ArrayList<>());
     return combinations;
   }
 
-  /** Generate all combinations unique combinations */
-  private void findCombinations(
-      List<Integer> currentCombination, int candidateIndex, int currentSum) {
-    if (currentSum == target) {
-      combinations.add(new LinkedList<Integer>(currentCombination));
+  public void findCombinations(
+      int[] candidates, int candidateIndex, int target, List<Integer> currentCombination) {
+    if (target == 0) {
+      combinations.add(new ArrayList<>(currentCombination));
+      return;
     }
 
-    if (currentSum > target) {
+    if (target < 0 || candidateIndex >= candidates.length) {
       return;
     }
 
     for (int index = candidateIndex; index < candidates.length; index++) {
-      int candidate = candidates[index];
-      currentCombination.add(candidate);
-      findCombinations(currentCombination, index, currentSum + candidate);
+      currentCombination.add(candidates[index]);
+      findCombinations(candidates, index, target - candidates[index], currentCombination);
       currentCombination.remove(currentCombination.size() - 1);
     }
-
-    return;
   }
 }
