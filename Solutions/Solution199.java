@@ -1,5 +1,4 @@
 class Solution199 {
-  private Set<Integer> heights;
   private List<Integer> rightSideView;
 
   public List<Integer> rightSideView(TreeNode root) {
@@ -9,7 +8,6 @@ class Solution199 {
     // Keep height, and add the first one seen at each height
     // Reverse pre-order traversal
 
-    this.heights = new HashSet<>();
     this.rightSideView = new ArrayList<>();
 
     if (root == null) {
@@ -26,9 +24,8 @@ class Solution199 {
       return;
     }
 
-    if (!heights.contains(height)) {
+    if (height >= rightSideView.size()) {
       rightSideView.add(node.val);
-      heights.add(height);
     }
 
     reversePreOrder(node.right, height + 1);
