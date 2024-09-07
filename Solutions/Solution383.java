@@ -1,4 +1,4 @@
-class Solution383 {
+class Solution {
     public boolean canConstruct(String ransomNote, String magazine) {
 
         // Edgecases
@@ -8,22 +8,19 @@ class Solution383 {
 
         // Capture the the frequency of all characters that appear in
         // `magazine`
-        Map<Character, Integer> characterMap = new HashMap<>();
+        int[] characterFrequency = new int[26];
 
         for (char character : magazine.toCharArray()) {
-            int currentCharacterCount = characterMap.getOrDefault(character, 0);
-            characterMap.put(character, currentCharacterCount + 1);
+            characterFrequency[character - 'a']++;
         }
 
         // Check if we have the right letters to construct `ransomNote`
         for (char character : ransomNote.toCharArray()) {
-            int currentMagazineCount = characterMap.getOrDefault(character, 0);
+            int currentMagazineCount = --characterFrequency[character - 'a'];
 
-            if (currentMagazineCount < 1) {
+            if (currentMagazineCount < 0) {
                 return false;
             }
-
-            characterMap.put(character, currentMagazineCount - 1);
         }
 
         return true;
