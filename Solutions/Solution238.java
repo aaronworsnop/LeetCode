@@ -1,37 +1,26 @@
-class Solution238 {
+class Solution {
   public int[] productExceptSelf(int[] nums) {
-    // nums: [1, 2, 3, 4]
-    // answer: [24, 12, 8, 6]
 
-    // Edgecase
-    if (nums.length == 0) {
-      return new int[0];
-    } else if (nums.length == 1) {
-      // nums: [3]
-      // answer: [0]
-      return new int[] {0};
+    int length = nums.length;
+
+    // Edgecases
+    if (nums == null || nums.length < 2) {
+      return new int[] { 0 };
     }
 
-    int forwardsMultiplier = 1;
-    int[] forwardsProducts = new int[nums.length];
-    forwardsProducts[0] = 1;
+    // Pass through forwards capturing 'pre-products'
+    int[] answer = new int[length];
+    answer[0] = 1;
 
-    int reverseMultiplier = 1;
-    int[] reverseProducts = new int[nums.length];
-    reverseProducts[nums.length - 1] = 1;
-
-    for (int i = 1; i < nums.length; i++) {
-      forwardsProducts[i] = nums[i - 1] * forwardsMultiplier;
-      forwardsMultiplier = forwardsProducts[i];
-
-      reverseProducts[nums.length - i - 1] = nums[nums.length - i] * reverseMultiplier;
-      reverseMultiplier = reverseProducts[nums.length - i - 1];
+    for (int index = 1; index < length; index++) {
+      answer[index] = answer[index - 1] * nums[index - 1];
     }
 
-    int[] answer = new int[nums.length];
-
-    for (int i = 0; i < nums.length; i++) {
-      answer[i] = forwardsProducts[i] * reverseProducts[i];
+    // Pass through backwards incorporating 'post-products'
+    int postProduct = 1;
+    for (int index = length - 2; index >= 0; index--) {
+      postProduct *= nums[index + 1];
+      answer[index] *= postProduct;
     }
 
     return answer;
