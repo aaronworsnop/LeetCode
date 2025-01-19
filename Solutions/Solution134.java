@@ -1,32 +1,38 @@
-class Solution134 {
+class Solution {
   public int canCompleteCircuit(int[] gas, int[] cost) {
-    int total = 0;
+    // Since the solution is unique, once we have confirmed
+    // one exists we can do a greedy search. Starting from
+    // the beginning of the array, we assume an index to be
+    // the solution index. We calculate the moving sum from
+    // an index, and if it ever goes negative, we know that
+    // starting index is not the solution. Once we find an
+    // index that can reach the end of the array without
+    // going negative, we know it's the solution. This only
+    // works as the solution is unique.
 
-    for (int station = 0; station < gas.length; station++) {
-      gas[station] = gas[station] - cost[station];
-      total += gas[station];
+    int totalSum = 0;
+    for (int index = 0; index < gas.length; index++) {
+      totalSum += gas[index] - cost[index];
     }
 
-    if (total < 0) {
+    if (totalSum < 0) {
+      // There is no solution
       return -1;
     }
 
-    total = 0;
-    int positiveFor = 0;
-    int station = 0;
-    while (positiveFor < gas.length) {
-      total += gas[station];
-      if (total < 0) {
-        total = 0;
-        positiveFor = 0;
-      } else {
-        positiveFor++;
-      }
+    int finalIndex = 0;
 
-      station++;
-      station %= gas.length;
+    // Find the unique solution
+    int currentSum = 0;
+    for (int index = 0; index < gas.length; index++) {
+      currentSum += gas[index] - cost[index];
+
+      if (currentSum < 0) {
+        currentSum = 0;
+        finalIndex = index + 1;
+      }
     }
 
-    return station;
+    return finalIndex;
   }
 }
