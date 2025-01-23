@@ -1,5 +1,9 @@
 class Solution {
   public int strStr(String haystack, String needle) {
+    // We could also use base26 number maths in a similar
+    // sliding window approach to improve the effeciency of this
+    // algorithm, because create substrings is very inneficient.
+
     // Edgecases
     if (needle.length() > haystack.length()) {
       return -1;
