@@ -1,5 +1,7 @@
 class Solution {
     public String reverseWords(String s) {
+        // The O(1) space complexity solution would be to reverse the
+        // entire string and then reverse each word in the string.
 
         // Edgecases
         if (s == null || s.length() == 0) {
