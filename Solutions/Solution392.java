@@ -2,26 +2,27 @@ class Solution {
     public boolean isSubsequence(String s, String t) {
 
         // Edgecase
-        if (s.length() > t.length()) {
+        int sLength = s.length();
+        int tLength = t.length();
+
+        if (sLength > tLength) {
             return false;
-        } else if (s.length() == t.length() && !s.equals(t)) {
+        } else if (sLength == tLength && !s.equals(t)) {
             return false;
         }
 
-        int start = 0;
-        int end = 0;
-        while (end < t.length() && start < s.length()) {
-            if (s.charAt(start) == t.charAt(end)) {
-                start++;
+        // If we can find all of the characters in s in order
+        // in t, then s is a subsequence of t
+        int sPoint = 0;
+        int tPoint = 0;
+        while (tPoint < tLength && sPoint < sLength) {
+            if (s.charAt(sPoint) == t.charAt(tPoint)) {
+                sPoint++;
             }
 
-            end++;
+            tPoint++;
         }
 
-        if (start >= s.length()) {
-            return true;
-        }
-
-        return false;
+        return sPoint >= sLength;
     }
 }
