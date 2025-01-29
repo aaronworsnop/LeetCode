@@ -5,25 +5,16 @@ class Solution {
             return false;
         }
 
-        Set<Integer> nearbyValues = new HashSet<>();
-        Queue<Integer> window = new LinkedList<>();
+        Map<Integer, Integer> mostRecentPosition = new HashMap<>();
 
-        int index = 0;
-        while (index < nums.length) {
-            int num = nums[index];
-
-            if (nearbyValues.contains(num)) {
+        for (int index = 0; index < nums.length; index++) {
+            if (Math.abs(mostRecentPosition.getOrDefault((nums[index]), Integer.MAX_VALUE) - index) <= k) {
                 return true;
             }
 
-            if (window.size() > k - 1)
-                nearbyValues.remove(window.poll());
-            window.offer(num);
-            nearbyValues.add(num);
-
-            index++;
+            mostRecentPosition.put(nums[index], index);
         }
-
+        
         return false;
     }
 }
