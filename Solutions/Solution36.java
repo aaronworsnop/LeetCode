@@ -7,30 +7,12 @@ class Solution {
             return false;
         }
 
-        List<Set<Integer>> rows = new ArrayList<>();
-        List<Set<Integer>> cols = new ArrayList<>();
-        List<Set<Integer>> grids = new ArrayList<>();
-
-        // Iterate through all cells and populate the sets.
-        // If we ever encounter a collision, then we return false
+        boolean[][] rows = new boolean[9][9];
+        boolean[][] cols = new boolean[9][9];
+        boolean[][] grids = new boolean[9][9];
 
         for (int i = 0; i < 9; i++) {
-            // We must initialise all new sets immediately, even when
-            // there is nothing to add, since we skip certain cells
-            Set<Integer> rowSet = new HashSet<>();
-            rows.add(rowSet);
-
             for (int j = 0; j < 9; j++) {
-                if (i == 0) {
-                    Set<Integer> colSet = new HashSet<>();
-                    cols.add(colSet);
-                }
-
-                int gridIndex = ((i / 3) * 3) + (j / 3);
-                if (gridIndex >= grids.size()) {
-                    grids.add(new HashSet<>());
-                }
-
                 int cellValue = board[i][j];
 
                 if (cellValue == '.') {
@@ -38,15 +20,17 @@ class Solution {
                     continue;
                 }
 
-                Set<Integer> gridSet = grids.get(gridIndex);
-                Set<Integer> colSet = cols.get(j);
+                // Update `cellValue` to be the actual integer representation for
+                // indexing purposes
+                cellValue = cellValue - '1';
+                int gridIndex = ((i / 3) * 3) + (j / 3);
 
-                if (rowSet.contains(cellValue) || colSet.contains(cellValue) || gridSet.contains(cellValue)) {
+                if (rows[i][cellValue] || cols[j][cellValue] || grids[gridIndex][cellValue]) {
                     return false;
                 } else {
-                    rowSet.add(cellValue);
-                    colSet.add(cellValue);
-                    gridSet.add(cellValue);
+                    rows[i][cellValue] = true;
+                    cols[j][cellValue] = true;
+                    grids[gridIndex][cellValue] = true;
                 }
             }
         }
