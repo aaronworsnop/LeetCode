@@ -6,35 +6,32 @@ class Solution {
             return "0";
         }
 
-        int index = 0;
-        while (index < num.length() && k > 0) {
-            if (index < 0) {
-                index = 0;
+        // Populate a Monitonic Stack greedily, whilst removing digits according
+        // to the condition above
+        LinkedList<Character> stack = new LinkedList<>();
+        for (char digit : num.toCharArray()) {
+            while (k > 0 && !stack.isEmpty() && stack.peekLast() > digit) {
+                stack.removeLast();
+                k--;
             }
 
-            if (index == num.length() - 1) {
-                num = num.substring(0, index);
-                index--;
-                k--;
-            } else if (num.charAt(index) > num.charAt(index + 1)) {
-                num = num.substring(0, index) + num.substring(index + 1, num.length());
-                index--;
-                k--;
-            } else {
-                index++;
-            }
+            stack.addLast(digit);
         }
 
-        // Remove leading 0s
-        index = 0;
-        while (index < num.length() && num.charAt(index) == '0') {
-            index++;
+        // Remove tail-end digits in case we haven't removed k-digits yet
+        for (int i = 0; i < k; i++) {
+            stack.removeLast();
         }
 
-        if (index > 0) {
-            num = num.substring(index);
+        // Construct the final digit representation, removing leading zeros
+        StringBuilder builder = new StringBuilder();
+        boolean clearedLeadingZeros = false;
+        for (char digit : stack) {
+            if (!clearedLeadingZeros && digit == '0') continue;
+            clearedLeadingZeros = true;
+            builder.append(digit);
         }
 
-        return num.length() == 0 ? "0" : num;
+        return builder.length() == 0 ? "0" : builder.toString();
     }
 }
