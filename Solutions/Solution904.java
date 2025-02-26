@@ -1,42 +1,24 @@
 class Solution {
-    public int totalFruit(int[] fruits) {        
-        if (fruits.length < 2) {
-            return fruits.length;
-        }
+    public int totalFruit(int[] fruits) {
+        int max = 0;
         
-        int max = 2;
-        
-        int[] types = new int[]{-1, -1};
-        
-        if (fruits[0] == fruits[1]) {
-            types = new int[]{fruits[0], fruits[0]};
-        } else {
-            types = new int[]{fruits[0], fruits[1]};
-        }
-        
+        Map<Integer, Integer> windowFruits = new HashMap<>();
         int left = 0;
-        for (int right = 2; right < fruits.length; right++) {
-            if (!basketMatch(types, fruits[right])) {
-                left = right - 1;
-                
-                while (left > 0 && fruits[left - 1] == fruits[right - 1]) {
-                    left--;
+        for (int right = 0; right < fruits.length; right++) {
+            windowFruits.put(fruits[right], windowFruits.getOrDefault(fruits[right], 0) + 1);
+
+            while (windowFruits.size() > 2) {
+                windowFruits.put(fruits[left], windowFruits.get(fruits[left]) - 1);
+                if (windowFruits.get(fruits[left]) == 0) {
+                    windowFruits.remove(fruits[left]);
                 }
-                
-                types = updateBasket(fruits[left], fruits[right]);
-            } 
-            
+
+                left++;
+            }
+
             max = Math.max(max, right - left + 1);
         }
-        
+
         return max;
-    }
-    
-    private boolean basketMatch(int[] types, int fruit) {
-        return types[0] == fruit || types[1] == fruit;
-    }
-                
-    private int[] updateBasket(int type1, int type2) {
-        return new int[]{type1, type2};
     }
 }
