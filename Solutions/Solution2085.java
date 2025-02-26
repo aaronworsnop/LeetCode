@@ -13,15 +13,12 @@ class Solution {
             words2Frequency.put(word, words2Frequency.getOrDefault(word, 0) + 1);
         }
 
-        System.out.println(words1Frequency);
-        System.out.println(words2Frequency);
 
         for (Map.Entry<String, Integer> entry : words1Frequency.entrySet()) {
             String word = entry.getKey();
             int frequency = entry.getValue();
 
             if (frequency == 1 && words2Frequency.getOrDefault(word, 0) == 1) {
-                System.out.println(word);
                 words++;
             }
         }
