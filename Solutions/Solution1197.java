@@ -2,7 +2,7 @@ class Solution {
     public int minKnightMoves(int x, int y) {
         x = Math.abs(x);
         y = Math.abs(y);
-        
+
         Queue<int[]> queue = new LinkedList<>();
         queue.offer(new int[]{0, 0});
         boolean visited[][] = new boolean[607][607];
@@ -21,6 +21,9 @@ class Solution {
 
                 for (int move = 0; move < 8; move++) {
                     int[] nextSquare = makeKnightMove(current[0], current[1], move);
+
+                    // We only need to explore the upper-right quadrant
+                    if (nextSquare[0] < -1 || nextSquare[1] < -1) continue; 
 
                     if (!visited[nextSquare[0] + 302][nextSquare[1] + 302]) {
                         visited[nextSquare[0] + 302][nextSquare[1] + 302] = true;
