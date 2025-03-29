@@ -1,48 +1,31 @@
-class Solution56 {
+class Solution {
   public int[][] merge(int[][] intervals) {
-    // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
-    //    =============
-    //                                                ==============
-    // =======
-    //                      ========
+      // Sort the intervals by their start position
+      List<int[]> intervalList = new ArrayList<>(Arrays.asList(intervals));
+      intervalList.sort( (a, b) -> a[0] - b[0]);
 
-    // Order them (O(nlogn)) then check (O(n)) -> (O(nlogn + n)) -> (O(nlogn + n))
+      List<int[]> mergedIntervals = new ArrayList<>();
 
-    // 1, 3, 8,  15
-    // 3, 6, 10, 18
+      int start = intervalList.get(0)[0];
+      int end = intervalList.get(0)[1];
+      for (int interval = 1; interval < intervalList.size(); interval++) {
+          int[] current = intervalList.get(interval);
+          
+          if (current[0] > end) {
+              mergedIntervals.add(new int[]{start, end});
+              start = current[0];
+          }
 
-    // check end of first place, anything less? -> yes
-    // -> merge by removing and adding end
-
-    // 1, 8,  15
-    // 6, 10, 18
-
-    // check end of first, anything less? -> no
-    // chech end of second, anything less? -> no
-
-    Set<Integer> ignores = new HashSet<>();
-
-    int interval = 0;
-    Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
-    while (interval < intervals.length - 1) {
-      int intervalEnd = intervals[interval][1];
-      if (intervals[interval + 1][0] <= intervalEnd) {
-        intervals[interval + 1][0] = intervals[interval][0];
-        if (intervals[interval][1] > intervals[interval + 1][1]) {
-          intervals[interval + 1][1] = intervals[interval][1];
-        }
-        ignores.add(interval);
+          end = Math.max(end, current[1]);
       }
-      interval++;
-    }
 
-    int[][] toReturn = new int[intervals.length - ignores.size()][2];
-    int toReturnIndex = 0;
-    for (int i = 0; i < intervals.length; i++) {
-      if (!ignores.contains(i)) {
-        toReturn[toReturnIndex++] = intervals[i];
+      mergedIntervals.add(new int[]{start, end});
+
+      int[][] toReturn = new int[mergedIntervals.size()][2]; 
+      for (int index = 0; index < mergedIntervals.size(); index++) {
+          toReturn[index] = mergedIntervals.get(index);
       }
-    }
-    return toReturn;
+
+      return toReturn;
   }
 }
