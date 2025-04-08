@@ -4,6 +4,14 @@ class Solution {
             return n;
         }
 
-        return fib(n - 2) + fib(n - 1);
+        int[] fibCalc = new int[n + 1];
+        fibCalc[0] = 0;
+        fibCalc[1] = 1;
+
+        for (int i = 2; i <= n; i++) {
+            fibCalc[i] = fibCalc[i - 2] + fibCalc[i - 1];
+        }
+
+        return fibCalc[n];
     }
 }
