@@ -7,20 +7,20 @@ class Solution {
         }
         
         // Count the frequency of all letters
-        Map<Character, Integer> letterFreq = new HashMap<>();
+        int[] letterFreq = new int[128];
         for (char c : s.toCharArray()) {
-            letterFreq.put(c, letterFreq.getOrDefault(c, 0) + 1);
+            letterFreq[c]++;
         }
         
         boolean even = s.length() % 2 == 0;
         if (even) {
-            for (int freq : letterFreq.values()) {
-                if (freq % 2 == 1) return false;
+            for (int ascii = 65; ascii < 123; ascii++) {
+                if (letterFreq[ascii] % 2 == 1) return false;
             }
         } else {
             boolean seenOdd = false;
-            for (int freq : letterFreq.values()) {
-                if (freq % 2 == 1) {
+            for (int ascii = 65; ascii < 123; ascii++) {
+                if (letterFreq[ascii] % 2 == 1) {
                     if (seenOdd == true) {
                         return false;
                     } else {
