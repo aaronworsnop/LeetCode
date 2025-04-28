@@ -1,48 +1,38 @@
 class Solution {
     public boolean[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
+
+        // Edgecases
         if (nums == null || nums.length == 0 || queries == null || queries.length == 0 || maxDiff < 0 || n < 0) {
             return new boolean[0];
         } 
 
         boolean[] paths = new boolean[queries.length];
 
-        // The index in the set cannot reach the **next** index
-        Set<Integer> breakIndices = new HashSet<>();
-        for (int i = 0; i < nums.length - 1; i++) {
-            if (Math.abs(nums[i] - nums[i + 1]) > maxDiff) {
-                // We found a break
-                breakIndices.add(i);
+        // Calculate what the earliest node each node can reach is
+        int[] reachableFrom = new int[n];
+        reachableFrom[0] = 0;
+        int id = 0;
+
+        for (int i = 1; i < nums.length; i++) {
+            if (Math.abs(nums[i] - nums[i - 1]) > maxDiff) {
+                id++;
             }
+
+            reachableFrom[i] = id;
         }
 
-        queriesLoop:
+        // If two nodes can reach each other, their earliest nodes will be
+        // the same. This only works because `nums` is non-decreasing.
         for (int i = 0; i < queries.length; i++) {
             int[] currentQuery = queries[i];
-            int from, to;
-            if (currentQuery[0] <= currentQuery[1]) {
-                from = currentQuery[0];
-                to = currentQuery[1];
-            } else {
-                from = currentQuery[1];
-                to = currentQuery[0];
-            }
+            int from = currentQuery[0];
+            int to = currentQuery[1];
 
-            for (int index = from; index < to; index++) {
-                if (breakIndices.contains(index)) {
-                    // There is no path
-                    paths[i] = false;
-                    continue queriesLoop;
-                }
+            if (reachableFrom[from] == reachableFrom[to]) {
+                paths[i] = true;
             }
-
-            paths[i] = true;
         }
 
         return paths;
-
-        // [1, 3, 3, 4, 6, 7]
-        //  ^     ^
-
-        // Check for breaks between two nodes
     }
 }
