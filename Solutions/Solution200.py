@@ -1,3 +1,5 @@
+from collections import *
+
 class Solution(object):
     def numIslands(self, grid):
         """
