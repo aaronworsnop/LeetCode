@@ -1,6 +1,6 @@
 # LeetCode  
 ## Keeping my programming and coding skills up to scratch!  
-`Java` `Python`
+`Java` `Python` `C++` `C#`  
 
 These are some of my personal solutions to LeetCode questions that I've done.  
   
