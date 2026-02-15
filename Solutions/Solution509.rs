@@ -1,13 +1,21 @@
 impl Solution {
     pub fn fib(n: i32) -> i32 {
-        if n == 0 {
+        if n < 1 {
             return 0;
-        }
-
-        if n == 1 {
+        } else if n == 1 {
             return 1;
         }
 
-        Self::fib(n - 1) + Self::fib(n - 2)
+        let mut tail = 0;
+        let mut head = 1;
+        let mut sum = 0;
+
+        for _ in 2..=n {
+            sum = tail + head;
+            tail = head;
+            head = sum;
+        }
+
+        sum
     }
 }
